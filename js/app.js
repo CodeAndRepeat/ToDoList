@@ -1,20 +1,51 @@
+// Select the elements
 const clear = document.querySelector(".clear");
 const dateElement = document.getElementById("date");
 const list = document.getElementById("list");
 const input = document.getElementById("input");
 
+// Classes names
 const CHECK = "fa-check-circle";
 const UNCHECK = "fa-circle-thin";
 const LINE_THROUGH = "lineThrough";
 
-let LIST=[]
-    , id = 0;
+// Variables
+let LIST, id;
 
+// Get item from localstorage
+let data = localStorage.getItem("TODO");
+
+// Check if data is not empty
+if(data){
+    LIST = JSON.parse(data);
+    id = LIST.length; // Set the id to the last one in the list
+    loadList(LIST); // Load the list to the user interface
+}else{
+    // If data isn't empty
+    LIST = [];
+    id = 0;
+}
+
+// Load data to the user's interface
+function loadList(array){
+    array.forEach(function(item){
+       addToDo(item.name, item.id, item.done, item.trash);
+    });
+}
+
+// Clear the local storage
+clear.addEventListener("click", function(){
+    localStorage.clear();
+    location.reload();
+});
+
+// Show today's date
 const options = {weekday : "long", month:"short", day:"numeric"};
 const today = new Date();
 
 dateElement.innerHTML = today.toLocaleDateString("en-US", options);
 
+// Add to do function
 function addToDo(toDo, id, done, trash){
 
     if(trash){return; }
@@ -32,9 +63,11 @@ function addToDo(toDo, id, done, trash){
     list.insertAdjacentHTML(position, item);
 }
 
+// Add an item to the list user the enter key
 document.addEventListener("keyup", function(even){
    if(event.keyCode == 13){
        const toDo = input.value;
+       // If the input isn't empty
        if(toDo){
             addToDo(toDo, id, false, false);
             LIST.push({
@@ -44,12 +77,14 @@ document.addEventListener("keyup", function(even){
                 trash: false
             });
 
+            localStorage.setItem("TODO", JSON.stringify(LIST));
             id++;
        }
        input.value = "";
    }
 });
 
+// Complete to do
 function completeToDo(element){
     element.classList.toggle(CHECK);
     element.classList.toggle(UNCHECK);
@@ -57,18 +92,21 @@ function completeToDo(element){
     LIST[element.id].done = LIST[element.id].done ? false : true;
 }
 
+// Remove to do
 function removeToDo(element){
     element.parentNode.parentNode.removeChild(element.parentNode);
     LIST[element.id].trash = true;
 }
 
+// Target the items created dynamically
 list.addEventListener("click", function(event){
-    const element = event.target;
-    const elementJob = element.attributes.job.value;
+    const element = event.target; // returned the clicked element inside list
+    const elementJob = element.attributes.job.value; // complete or delete
 
     if(elementJob == "complete"){
         completeToDo(element);
     }else if(elementJob == "delete"){
         removeToDo(element);
     }
+    localStorage.setItem("TODO", JSON.stringify(LIST));
 });
