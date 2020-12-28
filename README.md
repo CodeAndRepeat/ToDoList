@@ -5,10 +5,9 @@
 * [Technologies](#technologies)
 
 <p align="center">
-  <img src="./assets/1.png" alt="Demo" width="800" />
+  <img src="./assets/1.png" alt="Demo" width="400" />
 </p>
 
-[DEMO](https://codeandrepeat.github.io/ToDoList/)
 
 ## General info
 To do lista in JavaScript
@@ -18,3 +17,5 @@ Project is created with:
 * JavaScript
 * CSS3
 * HTML5
+
+[DEMO](https://codeandrepeat.github.io/ToDoList/)
